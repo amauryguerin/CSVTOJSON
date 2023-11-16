@@ -1,7 +1,7 @@
 <?php
 // récupération des data via form
 $csvUploaded = $_FILES['uploadedFile']['tmp_name'];
-
+var_dump(basename($_FILES['uploadedFile']['tmp_name']));
 // ouverture du fichier csv
 $csvRaw = file_get_contents($csvUploaded, 'r');
 
@@ -15,7 +15,7 @@ $csvData = array_map("str_getcsv", $csvLine);
 $csvJsonEncoded = json_encode($csvData, JSON_PRETTY_PRINT);
 
 // définition du nom du fichier
-$fileCleanName = str_replace(".csv", "", basename($_FILES['uploadedFile']['tmp_name'])) . ".json";
+$fileCleanName = basename($_FILES['uploadedFile']['tmp_name']) . ".json";
 
 // création du fichier json et génération du lien de téléchargement
 if (file_put_contents("uploads/" . $fileCleanName, $csvJsonEncoded)) {
