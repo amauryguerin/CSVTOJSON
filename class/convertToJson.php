@@ -1,33 +1,51 @@
 <?php
 class convertToJson
+
 {
     public array $fileUploaded;
     public string $fileTmpName;
+    public string $fileRaw;
+    public string $fileJsonEncoded;
 
-    public function convertFileToJson($fileUploaded)
+    public function getFileContent($fileUploaded)
     {
         $this->fileUploaded = $fileUploaded;
         $this->fileTmpName = $this->fileUploaded["tmp_name"];
+        $this->fileRaw = file_get_contents($this->fileTmpName, 'r');
+    }
 
-        $fileRaw = file_get_contents($this->fileTmpName, 'r');
+    public function csvToJson()
+    {
+        $csvLine = explode("\n", $this->fileRaw);
+        $csvData = array_map("str_getcsv", $csvLine);
+        $csvJsonEncoded = json_encode($csvData, JSON_PRETTY_PRINT);
+        $this->fileJsonEncoded = $csvJsonEncoded;
+    }
 
-        if ($this->fileUploaded["type"] === "text/csv") {
-            $csvLine = explode("\n", $fileRaw);
-            $csvData = array_map("str_getcsv", $csvLine);
-            $csvJsonEncoded = json_encode($csvData, JSON_PRETTY_PRINT);
-            $fileCleanName = basename($this->fileTmpName) . ".json";
-            if (file_put_contents("uploads/" . $fileCleanName, $csvJsonEncoded)) {
-                echo "<a href='uploads/$fileCleanName' download>Lien de téléchargement du fichier json</a>";
-            }
-        } else {
-            $filechange = str_replace(array("\n", "\r", "\t"), '', $fileRaw);
-            $filetrim = trim(str_replace('"', "'", $filechange));
-            $resultxml = simplexml_load_string($filetrim);
-            $resultjson = json_encode($resultxml);
-            $fileCleanName = basename($this->fileTmpName) . ".json";
-            if (file_put_contents("uploads/" . $fileCleanName, $resultjson)) {
-                echo "<a href='uploads/$fileCleanName' download>Lien de téléchargement du fichier json</a>";
-            }
+    public function xmlToJson()
+    {
+        $xmlData = simplexml_load_string($this->fileRaw);
+        $xmlJsonEncoded = json_encode($xmlData, JSON_PRETTY_PRINT);
+        $this->fileJsonEncoded = $xmlJsonEncoded;
+    }
+
+    public function saveJson()
+    {
+        $fileCleanName = basename($this->fileTmpName) . ".json";
+        if (file_put_contents("uploads/" . $fileCleanName, $this->fileJsonEncoded)) {
+            echo "<a href='uploads/$fileCleanName' download>Lien de téléchargement du fichier json</a>";
         }
     }
+
+    public function fileToJson()
+    {
+        $this->getFileContent($_FILES['uploadedFile']);
+        if ($this->fileUploaded["type"] === "text/csv") {
+            $this->csvToJson();
+        } else {
+            $this->xmlToJson();
+        }
+        $this->saveJson();
+    }
+    
 }
