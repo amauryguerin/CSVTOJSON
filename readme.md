@@ -36,7 +36,7 @@ Vous naviguez vers la page de résultat ou se trouve un lien de téléchargement
 
 ## OBSOLÈTE - VERSION 1
 
-### Convertisseur de fichiers CSV vers JSON en PHP
+### Convertisseur de fichier CSV vers JSON en PHP
 
 Ce projet offre une solution simple et efficace pour convertir des fichiers CSV en format JSON à l'aide de PHP.
 
