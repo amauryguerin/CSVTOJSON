@@ -1,5 +1,5 @@
 
-# Convertisseur de fichiers CSV et XML vers JSON en PHP
+# Convertisseur de fichier CSV et XML vers JSON en PHP
 
 Ce projet offre une solution simple et efficace pour convertir des fichiers CSV et XML en format JSON à l'aide de PHP.
 
